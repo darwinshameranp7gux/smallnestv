@@ -9,18 +9,13 @@ import com.agileai.hotweb.annotation.PageAction;
 import com.agileai.hotweb.common.BeanFactory;
 import com.agileai.hotweb.common.HttpClientHelper;
 import com.agileai.hotweb.controller.core.MasterSubListHandler;
-import com.agileai.hotweb.controller.core.BaseHandler.OperaType;
 import com.agileai.hotweb.domain.FormSelect;
 import com.agileai.hotweb.domain.FormSelectFactory;
-import com.agileai.hotweb.domain.core.User;
 import com.agileai.hotweb.renders.AjaxRenderer;
 import com.agileai.hotweb.renders.DispatchRenderer;
 import com.agileai.hotweb.renders.LocalRenderer;
 import com.agileai.hotweb.renders.ViewRenderer;
-import com.agileai.hr.common.PrivilegeHelper;
 import com.agileai.hr.module.information.service.HrEmployeeManage;
-
-import jdk.internal.org.objectweb.asm.Handle;
 
 public class HrEmployeeManageListHandler
         extends MasterSubListHandler {
