@@ -1,15 +1,22 @@
 package com.agileai.hr.module.attendance.handler;
 
 import java.io.ByteArrayInputStream;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.agileai.common.AppConfig;
 import com.agileai.domain.DataParam;
 import com.agileai.domain.DataRow;
 import com.agileai.hotweb.annotation.PageAction;
+import com.agileai.hotweb.common.BeanFactory;
+import com.agileai.hotweb.common.HttpClientHelper;
 import com.agileai.hotweb.controller.core.StandardListHandler;
 import com.agileai.hotweb.domain.core.User;
+import com.agileai.hotweb.renders.AjaxRenderer;
 import com.agileai.hotweb.renders.LocalRenderer;
 import com.agileai.hotweb.renders.NullRenderer;
 import com.agileai.hotweb.renders.ViewRenderer;
@@ -79,6 +86,24 @@ public class HrAttendanceManageListHandler extends StandardListHandler {
 		param.put("adtDate", targetDate);
 		return prepareDisplay(param);
 	}
+	
+	public ViewRenderer doSynchronizationAction(DataParam param){
+		String starttime = DateUtil.format(10,DateUtil.getDateTime(param.getString("adtDate")));	
+		Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateUtil.getDateTime(param.getString("adtDate")));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        String endtime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime());	        
+		HttpClientHelper clientHelper = new HttpClientHelper();
+		BeanFactory beanFactory = BeanFactory.instance();
+		AppConfig appConfig = beanFactory.getAppConfig();
+		String menuURLPrefix = appConfig.getConfig("GlobalConfig","ClockInURLPrefix");
+		String responseBody = clientHelper.retrieveGetReponseText(menuURLPrefix+"?starttime="+ Timestamp.valueOf(starttime).getTime()/1000+"&endtime="+Timestamp.valueOf(endtime).getTime()/1000);
+		return new AjaxRenderer(responseBody);
+	}
+	
 
 	@PageAction
 	public ViewRenderer nextDay(DataParam param) {

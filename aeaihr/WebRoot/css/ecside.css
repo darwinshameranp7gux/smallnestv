@@ -22,7 +22,7 @@ img {
 	padding:0px;
 	margin:0px;
 	text-align:left;
-font-family: "ËÎÌå","Verdana","Arial","Helvetica","sans-serif";
+font-family: "ï¿½ï¿½ï¿½ï¿½","Verdana","Arial","Helvetica","sans-serif";
 
 
 }
@@ -600,7 +600,7 @@ background-image:url(../images/gird/lastPageDisabled.gif);
 .ecSide .pageSizeTool {
 padding-top:2px;
 padding-left:2px;
-width:100px;
+/* width:100px; */
 }
 
 

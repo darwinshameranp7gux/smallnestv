@@ -37,6 +37,33 @@ function revokeApproval(){
 	}
 	doSubmit({actionType:'revokeApproval'});
 }
+
+
+function synchronization(){
+	if (actionType != insertRequestActionValue && !isSelectedRow()){
+		writeErrorMsg('请先选中一条记录!');
+		return;
+	}
+	jConfirm('是否进行自动同步','信息确认','1',function(r){
+		if(r){
+			$("#isDisp").val("Y");
+		}else{
+			$("#isDisp").val("N");
+		}
+		if(isValid($("#isDisp").val())){
+			postRequest('form1',{actionType:'synchronization',onComplete:function(responseText){
+				var responseText = JSON.parse(responseText)
+				if (true == responseText.success){
+					jAlert('数据同步成功','信息提示',function(){
+						doSubmit({actionType:'prepareDisplay'});
+					});
+				}else{
+					showMessage(responseText.errorMsg);
+				}
+			}});
+		}
+	});
+}
 </script>
 </head>
 <body>
@@ -52,6 +79,7 @@ function revokeApproval(){
    <aeai:previlege code="detail"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="V" align="center" onclick="doRequest('viewDetail')"><input id="detailImgBtn" value="&nbsp;" title="查看" type="button" class="detailImgBtn" />查看</td></aeai:previlege>
    <aeai:previlege code="delete"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="D" align="center" onclick="doDelete($('#'+rsIdTagId).val());"><input id="deleteImgBtn" value="&nbsp;" title="删除" type="button" class="delImgBtn" />删除</td></aeai:previlege>
    <aeai:previlege code="amountSet"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="U" align="center" onclick="openSalarySetBox()"><input id="salaryImgBtn" value="&nbsp;" title="工资额度设定" type="button" class="salaryImgBtn"/>额度设定</td></aeai:previlege>
+   <aeai:previlege code="synchronization"><td  onmouseover="onMover(this);" onmouseout="onMout(this);"   align="center" class="bartdx" onclick="synchronization()" ><input value="&nbsp;"type="button" class="approveImgBtn" id="synchronization" title="同步" />同步</td></aeai:previlege>
 </tr>
 </table>
 </div>
@@ -76,7 +104,7 @@ width="100%" rowsDisplayed="${ec_rd == null ?15:ec_rd}"
 listWidth="100%" 
 height="390px"
 >
-<ec:row styleClass="odd" ondblclick="clearSelection();doRequest('viewDetail')" oncontextmenu="selectRow(this,{EMP_ID:'${row.EMP_ID}'});controlUpdateBtn('${row.EMP_STATE}');refreshConextmenu()" onclick="selectRow(this,{EMP_ID:'${row.EMP_ID}'});controlUpdateBtn('${row.EMP_STATE}');">
+<ec:row styleClass="odd" ondblclick="clearSelection();doRequest('viewDetail')" oncontextmenu="selectRow(this,{EMP_ID:'${row.EMP_ID}',EMP_CODE:'${row.EMP_CODE}'});controlUpdateBtn('${row.EMP_STATE}');refreshConextmenu()" onclick="selectRow(this,{EMP_ID:'${row.EMP_ID}',EMP_CODE:'${row.EMP_CODE}'});controlUpdateBtn('${row.EMP_STATE}');">
 	<ec:column width="50" style="text-align:center" property="_0" title="序号" value="${GLOBALROWCOUNT}" />
 	<ec:column width="100" property="EMP_CODE" title="编号"   />
 	<ec:column width="100" property="EMP_NAME" title="姓名"   />
@@ -89,10 +117,13 @@ height="390px"
 	<ec:column width="100" property="EMP_EDUCATION" title="学历"   mappingItem="EMP_EDUCATION"/>
 	<ec:column width="100" property="EMP_STATE" title="状态" mappingItem="EMP_STATE"/>
 	<ec:column width="100" property="EMP_WORK_STATE" title="入职状态" mappingItem="EMP_WORK_STATE"/>
+	<ec:column width="100" property="EMP_IS_SYNC" title="同步状态" mappingItem="EMP_IS_SYNC"/>
 </ec:row>
 </ec:table>
 <input type="hidden" name="EMP_ID" id="EMP_ID" value="" />
+<input type="hidden" name="EMP_CODE" id="EMP_CODE" value="" />
 <input type="hidden" name="actionType" id="actionType" />
+<input type="hidden" name="isDisp" id="isDisp" />
 <script language="JavaScript">
 setRsIdTag('EMP_ID');
 var ectableMenu = new EctableMenu('contextMenu','ec_table');

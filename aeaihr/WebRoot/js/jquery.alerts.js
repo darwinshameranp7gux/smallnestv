@@ -52,6 +52,24 @@
 				if( callback ) callback(result);
 			});
 		},
+		
+		
+		confirm: function(message, title, type,callback) {
+			switch(type) {
+			case '0':
+				$.alerts.okButton='&nbsp;OK&nbsp;';         
+				$.alerts.cancelButton='&nbsp;Cancel&nbsp;';
+			break;
+			case '1':
+				$.alerts.okButton='&nbsp;是&nbsp;';         
+				$.alerts.cancelButton='&nbsp;否&nbsp;';
+			break;
+			}
+			if( title == null ) title = '信息确认';
+			$.alerts._show(title, message, null, 'confirm', function(result) {
+				if( callback ) callback(result);
+			});
+		},
 			
 		prompt: function(message, value, title, callback) {
 			if( title == null ) title = '信息录入';
@@ -228,6 +246,14 @@
 			$.alerts.confirm(arguments[0],"信息确认",arguments[1]);
 		}else{
 			$.alerts.confirm(message, title, callback);
+		}
+	};
+	
+	jConfirm = function(message, title,type, callback) {
+		if (arguments.length==2){
+			$.alerts.confirm(arguments[0],"信息确认",type,arguments[1]);
+		}else{
+			$.alerts.confirm(message, title, type,callback);
 		}
 	};
 		

@@ -2,18 +2,25 @@ package com.agileai.hr.module.information.handler;
 
 import java.util.List;
 
+import com.agileai.common.AppConfig;
 import com.agileai.domain.DataParam;
 import com.agileai.domain.DataRow;
 import com.agileai.hotweb.annotation.PageAction;
+import com.agileai.hotweb.common.BeanFactory;
+import com.agileai.hotweb.common.HttpClientHelper;
 import com.agileai.hotweb.controller.core.MasterSubListHandler;
+import com.agileai.hotweb.controller.core.BaseHandler.OperaType;
 import com.agileai.hotweb.domain.FormSelect;
 import com.agileai.hotweb.domain.FormSelectFactory;
 import com.agileai.hotweb.domain.core.User;
+import com.agileai.hotweb.renders.AjaxRenderer;
 import com.agileai.hotweb.renders.DispatchRenderer;
 import com.agileai.hotweb.renders.LocalRenderer;
 import com.agileai.hotweb.renders.ViewRenderer;
 import com.agileai.hr.common.PrivilegeHelper;
 import com.agileai.hr.module.information.service.HrEmployeeManage;
+
+import jdk.internal.org.objectweb.asm.Handle;
 
 public class HrEmployeeManageListHandler
         extends MasterSubListHandler {
@@ -23,13 +30,7 @@ public class HrEmployeeManageListHandler
         this.serviceId = buildServiceId(HrEmployeeManage.class);
     }
     public ViewRenderer prepareDisplay(DataParam param) {
-		User user = (User) this.getUser();
-		PrivilegeHelper privilegeHelper = new PrivilegeHelper(user);
-		if (!privilegeHelper.isHRMASTER()) {
-			param.put("currentUserCode", user.getUserCode());
-		} else {
-			param.put("currentUserCode", "");
-		}
+	
 		mergeParam(param);
 		initParameters(param);
 		this.setAttributes(param);
@@ -49,8 +50,15 @@ public class HrEmployeeManageListHandler
         setAttribute("empSex",
                      FormSelectFactory.create("USER_SEX")
                                       .addSelectedValue(param.get("empSex")));
+        setAttribute("EMP_IS_SYNC",
+                FormSelectFactory.create("EMP_IS_SYNC")
+                                 .addSelectedValue(param.get("IS_SYNC")));
+        initMappingItem("EMP_IS_SYNC",
+                        FormSelectFactory.create("IS_SYNC").getContent());
+        
         initMappingItem("EMP_SEX",
-                        FormSelectFactory.create("USER_SEX").getContent());
+                FormSelectFactory.create("USER_SEX").getContent());
+        
         initMappingItem("EMP_EDUCATION",
                         FormSelectFactory.create("EMP_EDUCATION").getContent());
         initMappingItem("EMP_STATE",
@@ -64,16 +72,29 @@ public class HrEmployeeManageListHandler
     }
     
 	
+    
+    public ViewRenderer doSynchronizationAction(DataParam param){
+		HttpClientHelper clientHelper = new HttpClientHelper();
+		BeanFactory beanFactory = BeanFactory.instance();
+		AppConfig appConfig = beanFactory.getAppConfig();
+		String menuURLPrefix = appConfig.getConfig("GlobalConfig","PerURLPrefix");
+		String responseBody = clientHelper.retrieveGetReponseText(menuURLPrefix+"?code="+param.getString("EMP_CODE")+"&isDisp="+param.getString("isDisp"));
+		return new AjaxRenderer(responseBody);
+	}
+    
     public ViewRenderer doApproveRequestAction(DataParam param) {
 		storeParam(param);
 		return new DispatchRenderer(getHandlerURL(this.editHandlerClazz) + "&"
 				+ OperaType.KEY + "=approve&comeFrome=approve");
 	}
+    
+    
     protected void initParameters(DataParam param) {
     	initParamItem(param, "EMP_STATE", "");
         initParamItem(param, "empSex", "");
         initParamItem(param, "empName", "");
     }
+    
 
     protected HrEmployeeManage getService() {
         return (HrEmployeeManage) this.lookupService(this.getServiceId());

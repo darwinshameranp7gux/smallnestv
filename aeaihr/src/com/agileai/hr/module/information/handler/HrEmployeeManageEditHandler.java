@@ -1,6 +1,8 @@
 package com.agileai.hr.module.information.handler;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -194,6 +196,8 @@ public class HrEmployeeManageEditHandler extends MasterSubEditMainHandler {
 				responseText = "repeat";
 			} else {
 				param.put("EMP_CREATE_TIME", new Date());
+				param.put("EMP_MODIFY_TIME", new Date());
+				param.put("EMP_IS_SYNC", "N");
 				getService().createMasterRecord(param);
 				responseText = param.get(baseTablePK);
 			}
@@ -219,6 +223,7 @@ public class HrEmployeeManageEditHandler extends MasterSubEditMainHandler {
 				if(param.get("EMP_ANNUAL_LEAVE_DAYS")==""){
 					param.put("EMP_ANNUAL_LEAVE_DAYS", "0");
 				}
+				param.put("EMP_MODIFY_TIME", new Date());
 				getService().updateMasterRecord(param);
 				saveSubRecords(param);
 				responseText = param.get(baseTablePK);

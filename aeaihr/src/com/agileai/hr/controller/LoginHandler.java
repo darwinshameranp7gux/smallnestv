@@ -72,7 +72,7 @@ public class LoginHandler  extends BaseHandler{
 					
 					String fromIpAddress = HttpRequestHelper.getRemoteHost(request);
 					Profile profile = new Profile(userId,fromIpAddress,user);
-					request.getSession().setAttribute(Profile.PROFILE_KEY, profile);
+					request.getSession().setAttribute(appName+"."+Profile.PROFILE_KEY, profile);
 					
 					writeSystemLog("系统登陆",getActionType());
 					result = new RedirectRenderer(getHandlerURL(Constants.FrameHandlers.HomepageHandlerId));

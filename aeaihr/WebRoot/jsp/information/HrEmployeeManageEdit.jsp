@@ -34,10 +34,10 @@ function saveMasterRecord(){
 	var startDate = new Date(($('#EMP_INDUCTION_TIME').val()).replace(/-/g,"/"));
 	var endDate = new Date(($('#EMP_REGULAR_TIME').val()).replace(/-/g,"/"));
 	
-     if(startDate > endDate){
-	     writeErrorMsg('［上岗时间］必须小于［转正时间］');
-  	     return;
-     } 
+     if(startDate > endDate){
+	     writeErrorMsg('［上岗时间］必须小于［转正时间］');
+  	     return;
+     } 
 	var probation = $("#EMP_PROBATION").val();
 	var basic = $("#EMP_BASIC").val();
 	if(probation == ""){
@@ -47,7 +47,7 @@ function saveMasterRecord(){
 	if(basic == ""){
 		writeErrorMsg('转正工资不能为空！');
 		return;
-	} 
+	} 
 	if (validate()){
 		if (ele("currentSubTableId")){
 			var subTableId = $("#currentSubTableId").val();
@@ -542,6 +542,8 @@ requiredValidator.add("EMP_NOW_DEPT");
 requiredValidator.add("EMP_NOW_JOB");
 requiredValidator.add("EMP_INDUCTION_TIME");
 requiredValidator.add("EMP_REGULAR_TIME");
+requiredValidator.add("EMP_EMAIL");
+requiredValidator.add("EMP_TEL");
 numValidator.add("EMP_BASIC");
 numValidator.add("EMP_PERFORMANCE");
 numValidator.add("EMP_SUBSIDY");

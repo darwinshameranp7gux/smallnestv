@@ -23,6 +23,25 @@ function exportFile(fileType){
 	doSubmit({actionType:'export'});
 	hideSplash();
 }
+
+
+
+function synchronization(){
+	jConfirm('是否进行同步操作','信息确认','1',function(r){
+		postRequest('form1',{actionType:'synchronization',onComplete:function(responseText){
+			if ("OK" == responseText){
+				jAlert('考勤数据同步成功','信息提示',function(){
+					doSubmit({actionType:'prepareDisplay'});
+				});
+			}else{
+				jAlert('考勤数据同步失败,请联系管理员','信息提示',function(){
+					doSubmit({actionType:'prepareDisplay'});
+				});
+			}
+		}});
+	});
+}
+
 </script>
 </head>
 <body>
@@ -35,6 +54,7 @@ function exportFile(fileType){
    <aeai:previlege code="signOut"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="E" align="center" onclick="showEditBox('updateRequest')"><input id="singOutImgBtn" value="&nbsp;" title="签退" type="button" class="editImgBtn" />签退</td></aeai:previlege>
    <aeai:previlege code="exportWord"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="e" align="center" onclick="exportFile('word')"><input value="&nbsp;" title="导出WORD" type="button" class="wordImgBtn" style="margin-right:" />导出WORD</td></aeai:previlege>
    <aeai:previlege code="exportPdf"><td onmouseover="onMover(this);" onmouseout="onMout(this);" class="bartdx" hotKey="p" align="center" onclick="exportFile('pdf')"><input value="&nbsp;" title="导出PDF" type="button" class="pdfImgBtn" style="margin-right:" />导出PDF</td></aeai:previlege>
+   <aeai:previlege code="synchronization"><td  onmouseover="onMover(this);" onmouseout="onMout(this);"   align="center" class="bartdx" onclick="synchronization()" ><input value="&nbsp;"type="button" class="approveImgBtn" id="synchronization" title="同步" />同步</td></aeai:previlege>
 </tr>
 </table>
 </div>
